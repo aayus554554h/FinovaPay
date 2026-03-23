@@ -1,7 +1,8 @@
-let orders = [];
+
+  let orders = [];
 let adminUPI = "";
 
-// 🔥 PAGE SWITCH
+// PAGE SWITCH
 function showPage(page) {
   document.getElementById("buyPage").style.display = "none";
   document.getElementById("sellPage").style.display = "none";
@@ -10,7 +11,7 @@ function showPage(page) {
   document.getElementById(page + "Page").style.display = "block";
 }
 
-// 🔥 SELL
+// SELL FUNCTION
 function addSell() {
   const amount = document.getElementById("amount").value;
   if (!amount) return alert("Enter amount");
@@ -25,21 +26,22 @@ function addSell() {
   renderBuy();
 }
 
-// 🔥 AUTO ROTATION BUY VIEW
+// RENDER BUY
 function renderBuy() {
   const buyDiv = document.getElementById("buyPage");
+
   buyDiv.innerHTML = "<h3>Buy Orders</h3>";
 
-  let pendingOrders = orders.filter(o => o.status === "pending");
+  let pending = orders.filter(o => o.status === "pending");
 
-  if (pendingOrders.length === 0) {
-    buyDiv.innerHTML += "<p>No orders</p>";
+  if (pending.length === 0) {
+    buyDiv.innerHTML += "<p>No orders yet</p>";
   }
 
-  pendingOrders.forEach(o => {
+  pending.forEach(o => {
     buyDiv.innerHTML += 
       <div class="card">
-        ₹${o.amount} + Reward ₹${Math.floor(o.amount * 0.06)}
+        ₹${o.amount} + Reward ₹${Math.floor(o.amount * 0.05)}
         <br>
         <button onclick="buyOrder(${o.id})">Buy</button>
       </div>
@@ -51,40 +53,46 @@ function renderBuy() {
   }
 }
 
-// 🔥 BUY ACTION (rotation)
+// BUY CLICK
 function buyOrder(id) {
   orders = orders.map(o => {
-    if (o.id === id) {
-      o.status = "done";
-    }
+    if (o.id === id) o.status = "done";
     return o;
   });
 
   renderBuy();
 }
 
-// 🔥 SELL PAGE UI
-document.getElementById("sellPage").innerHTML = 
-  <h3>Sell</h3>
-  <input id="amount" placeholder="Enter amount">
-  <br><br>
-  <button onclick="addSell()">Sell Now</button>
-;
+// SELL PAGE UI
+function loadSellPage() {
+  document.getElementById("sellPage").innerHTML = 
+    <h3>Sell</h3>
+    <input id="amount" placeholder="Enter amount">
+    <br><br>
+    <button onclick="addSell()">Sell Now</button>
+  ;
+}
 
-// 🔥 ADMIN PAGE UI
-document.getElementById("adminPage").innerHTML = 
-  <h3>Admin Panel</h3>
-  <input id="upi" placeholder="Enter UPI ID">
-  <br><br>
-  <button onclick="saveUPI()">Save</button>
-;
+// ADMIN PAGE UI
+function loadAdminPage() {
+  document.getElementById("adminPage").innerHTML = 
+    <h3>Admin Panel</h3>
+    <input id="upi" placeholder="Enter UPI ID">
+    <br><br>
+    <button onclick="saveUPI()">Save</button>
+  ;
+}
 
-// 🔥 SAVE ADMIN UPI
+// SAVE UPI
 function saveUPI() {
   adminUPI = document.getElementById("upi").value;
   alert("UPI Saved");
   renderBuy();
 }
 
-// 🔥 INIT
-renderBuy();
+// LOAD ON START
+window.onload = function () {
+  loadSellPage();
+  loadAdminPage();
+  renderBuy();
+};
